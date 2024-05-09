@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
@@ -11,7 +10,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed w-screen p-4 top-0 z-10">
-      <div className="flex justify-between items-center p-4 rounded-lg border-2 border-black">
+      <div className="flex justify-between items-center p-4 rounded-lg border-2 border-black backdrop-blur bg-white/50">
         <Link to="/" className="text-3xl">
           KOPI FADHIL
         </Link>
@@ -34,6 +33,15 @@ export default function Navbar() {
                 } ${navText}`}
               >
                 MENU
+              </Link>
+              <h1 className="text-3xl">|</h1>
+              <Link
+                to="/cart"
+                className={`${
+                  pathname === "/cart" ? "border-black border-2" : ""
+                } ${navText}`}
+              >
+                CART
               </Link>
               <h1 className="text-3xl">|</h1>
               <Link
@@ -70,9 +78,12 @@ export default function Navbar() {
         <div className="flex gap-2">
           {!token ? (
             <>
-              <Link to="/login" className={`${
+              <Link
+                to="/login"
+                className={`${
                   pathname === "/login" ? "border-black border-2" : ""
-                } ${navText}`}>
+                } ${navText}`}
+              >
                 LOGIN
               </Link>
             </>

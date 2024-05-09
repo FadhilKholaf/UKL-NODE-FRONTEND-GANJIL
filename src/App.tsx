@@ -57,29 +57,41 @@ function App() {
     handleSearch();
   }, [search]);
 
-  const handleAddCartItems = (id: number) => {
+  const handleAddCartItems = (id: number, operator: boolean) => {
+    let operation = operator ? +1 : -1;
     const ls = localStorage.getItem("cartItems");
-    let cartItems;
+    let cartItems: any;
     let updatedCartItems;
     if (ls) {
       cartItems = JSON.parse(ls);
     }
-    if (cartItems === undefined) {
+    if (cartItems === undefined && operator === true) {
       updatedCartItems = [{ id, quantity: 1 }];
     } else {
       const existingItemIndex = cartItems.findIndex(
         (item: any) => item.id === id
       );
       if (existingItemIndex !== -1) {
-        updatedCartItems = cartItems.map((item: any, index: number) => {
-          if (index === existingItemIndex) {
-            return { ...item, quantity: item.quantity + 1 };
-          }
-          return item;
-        });
+        updatedCartItems = cartItems
+          .map((item: any, index: number) => {
+            if (index === existingItemIndex) {
+              if (item.quantity <= 0) {
+                return null;
+              }
+              return { ...item, quantity: item.quantity + operation };
+            }
+            return item;
+          })
+          .filter((item: any) => item !== null);
       } else {
-        updatedCartItems = [...cartItems, { id, quantity: 1 }];
+        if (operator === true) {
+          updatedCartItems = [...cartItems, { id, quantity: 1 }];
+        }else{
+          updatedCartItems = [...cartItems]
+        }
       }
+      console.log(updatedCartItems);
+      
     }
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
     setQuantity();
@@ -105,8 +117,15 @@ function App() {
     }
   };
 
+  const rupiah = (number: number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(number);
+  };
+
   return (
-    <main className="flex flex-col gap-20 mt-28 justify-center items-center">
+    <main className="flex flex-col gap-20 mt-28 justify-center items-center pb-28">
       <h1 className="text-3xl">Coffee Ordering System</h1>
       <input
         type="text"
@@ -115,27 +134,29 @@ function App() {
         onChange={(e) => setSearch(e.target.value)}
         value={search as string}
       />
-      <div className="col-span-3 flex gap-8">
+      <div className="flex flex-wrap justify-evenly px-28 gap-y-16">
         {foodData &&
           foodData.map((coffee, index) => (
             <div
               key={index}
               className="w-[300px] h-[500px] border-2 border-black flex flex-col gap-4 p-4 rounded-lg"
             >
-                <div className="relative w-full h-[300px]">
-                  <img
-                    src={BACKEND_URL + "/coffee/image/" + coffee.image}
-                    alt={coffee.image}
-                    className="absolute left-1/2 -translate-x-1/2 h-full w-full object-cover rounded-lg"
-                  />
-                </div>
+              <div className="relative w-full h-[300px]">
+                <img
+                  src={BACKEND_URL + "/coffee/image/" + coffee.image}
+                  alt={coffee.image}
+                  className="absolute left-1/2 -translate-x-1/2 h-full w-full object-cover rounded-lg"
+                />
+              </div>
               <h1>{coffee.name}</h1>
               <h1>Size : {coffee.size}</h1>
-              <h1>Size : {coffee.price}</h1>
+              <h1>Size : {rupiah(coffee.price)}</h1>
               <div className="flex gap-4 items-center">
                 <button
                   className="border-2 border-black w-[2rem] h-[2rem] rounded-full"
-                  onClick={() => {}}
+                  onClick={() => {
+                    handleAddCartItems(coffee.id, false);
+                  }}
                 >
                   -
                 </button>
@@ -143,7 +164,7 @@ function App() {
                 <button
                   className="border-2 border-black w-[2rem] h-[2rem] rounded-full"
                   onClick={() => {
-                    handleAddCartItems(coffee.id);
+                    handleAddCartItems(coffee.id, true);
                   }}
                 >
                   +

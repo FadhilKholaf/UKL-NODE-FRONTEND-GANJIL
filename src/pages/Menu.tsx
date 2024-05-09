@@ -36,7 +36,7 @@ export default function Menu() {
 
   useEffect(() => {
     handleSearch();
-  },[]);
+  }, []);
 
   useEffect(() => {
     handleSearch();
@@ -90,6 +90,7 @@ export default function Menu() {
     });
 
     setOpenForm(false);
+    setFormData({ image: null, name: "", size: "", price: 0 });
     handleSearch();
   };
 
@@ -128,6 +129,7 @@ export default function Menu() {
     });
 
     setOpenForm(false);
+    setFormData({ image: null, name: "", size: "", price: 0 });
     handleSearch();
   };
 
@@ -286,8 +288,8 @@ export default function Menu() {
                   <td>
                     <div className="flex justify-evenly">
                       <button
-                        className="rounded-md border-2 border-yellow-400 px-4 py-1"
-                        onClick={() => {
+                        className="rounded-md border-2 border-black px-4 py-1"
+                        onClick={async () => {
                           setEdit({ status: true, id: item.id });
                           setFormData({
                             image: item.image,
@@ -304,7 +306,7 @@ export default function Menu() {
                         onClick={() => {
                           handleDelete(item.id);
                         }}
-                        className="rounded-md border-2 border-red-400 px-4 py-1"
+                        className="rounded-md border-2 border-black px-4 py-1"
                       >
                         Delete
                       </button>
