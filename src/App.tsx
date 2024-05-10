@@ -13,7 +13,7 @@ function App() {
       image: string;
       createdAt: string;
       updatedAt: string;
-      quantity: string | null;
+      quantity: number | null;
     }[]
   >();
 
@@ -86,13 +86,22 @@ function App() {
       } else {
         if (operator === true) {
           updatedCartItems = [...cartItems, { id, quantity: 1 }];
-        }else{
-          updatedCartItems = [...cartItems]
+        } else {
+          updatedCartItems = [...cartItems];
         }
       }
-      console.log(updatedCartItems);
-      
+      updatedCartItems = updatedCartItems
+        .map((item: any) => {
+          if (item.quantity === 0) {
+            return null;
+          }
+          return item;
+        })
+        .filter((item: any) => {
+          return item !== null;
+        });
     }
+
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
     setQuantity();
   };
@@ -109,7 +118,7 @@ function App() {
         if (will !== undefined) {
           return { ...item, quantity: will.quantity };
         }
-        return item;
+        return { ...item, quantity: 0 };
       });
       setFoodData(tempFood);
     } else {
@@ -134,7 +143,7 @@ function App() {
         onChange={(e) => setSearch(e.target.value)}
         value={search as string}
       />
-      <div className="flex flex-wrap justify-evenly px-28 gap-y-16">
+      <div className="flex flex-wrap justify-evenly px-28 gap-16">
         {foodData &&
           foodData.map((coffee, index) => (
             <div

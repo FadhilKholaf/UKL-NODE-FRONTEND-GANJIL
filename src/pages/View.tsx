@@ -56,7 +56,7 @@ export default function View() {
   };
 
   return (
-    <main className="pt-28 min-h-screen w-screen flex justify-center items-center">
+    <main className="pt-28 min-h-screen w-screen flex justify-center items-center pb-28">
       <div className="border-2 border-black p-8 rounded-lg gap-8 flex flex-col w-[90vw]">
         <h1 className="text-3xl text-center">
           <b>Transaction History</b>
